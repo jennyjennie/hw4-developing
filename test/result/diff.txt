@@ -1,0 +1,25 @@
+5_PrintBinUnConstantInvocation
+--- your output:(result/5_PrintBinUnConstantInvocation)
++++ answer:(./basic_cases/sample_solutions/5_PrintBinUnConstantInvocation)
+@@ -82,8 +82,6 @@
+         constant <line: 31, col: 22> 4
+     print statement <line: 32, col: 5>
+       function invocation <line: 32, col: 11> func
+-27:14: error: Operands of 'and' must be boolean.
+-28:13: error: Operands of 'or' must be boolean.
+ 
+ |--------------------------------|
+ |  There is no syntactic error!  |
+
+11_call
+--- your output:(result/11_call)
++++ answer:(./basic_cases/sample_solutions/11_call)
+@@ -20,7 +20,6 @@
+       constant <line: 23, col: 12> 30
+     print statement <line: 24, col: 3>
+       function invocation <line: 24, col: 9> func
+-24:9: error: 'func' function's number of arguments is not the same as number of parameters.
+ 
+ |--------------------------------|
+ |  There is no syntactic error!  |
+

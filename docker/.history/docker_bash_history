@@ -1,0 +1,332 @@
+make clean
+make test
+exit
+ls
+cd tutorial/
+ls
+cd example/
+ls
+make
+exit
+make clean
+make test
+make clean
+make test
+make clean
+make
+make test
+make clean
+make test
+make
+make
+make
+make clean
+make test
+exit
+make clean
+exit
+make clean
+make test
+eix
+exit
+make
+make test
+make test
+exit
+LS
+LS
+ls
+ls -l
+cd src
+maker
+maker
+make
+./parser ../test/basic_cases/test_cases/3_function.p 
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+cd ../
+make test
+make test
+make test
+make test
+make test
+exirt
+exit
+make clean
+make
+pwd
+cd src
+make
+make
+make clean
+make
+make clean
+make
+make clean
+make
+make
+make
+make clean
+make
+make
+$(shell find $(ASTDIR) -name '*.cpp')
+$(shell find $(lib/JAST) -name '*.cpp')
+pwd
+$(shell find lib/JAST -name '*.cpp')
+find lib/JAST -name '*.cpp'
+make
+make clean
+make test
+make clean
+make 
+make 
+make 
+make 
+make clean
+make
+make test
+make clean
+make test
+make clean
+make clean
+make
+make test
+pwd
+make clean
+make test
+make
+make clean
+make 
+make
+make
+make clean
+make
+make clean
+make
+make
+make
+make
+make
+make
+make
+make test
+make
+make
+make
+make 
+make
+make
+make
+make clean
+make
+make
+make
+make test
+make
+make
+make
+make clean
+make
+maked
+make
+make clean
+make
+make clea
+make clean
+make
+make
+make clean
+make
+make test
+make test
+make
+make
+make clean
+make
+make test
+make
+make
+make
+make test
+make
+mnake clean
+make clean
+make test
+make
+make test
+make
+make
+make clean
+make
+make
+cd src
+./parser ../test/basic_cases/test_cases/2_declaration.p 
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make 
+make 
+make 
+make test
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make test
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/3_function.p --dump-ast
+exit
+make
+make test
+make test
+make test
+make test
+make test
+make test
+make test
+make test
+make test
+make test
+make clean
+make test
+make
+make test
+make clean
+make clean
+make test
+make test
+make clean
+make test
+make test
+make test
+make test
+make test
+make test
+make 
+make clean
+make clean
+make test
+make clean
+make
+make
+make test
+make test
+pwd
+make clean
+make
+make
+make
+make clean
+make test
+make
+make
+cd src
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+make
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+cd ..
+make test
+make test
+make test
+exit
+make test
+make test
+make test
+make clean
+make test
+make clean
+cd src
+make
+./parser ../test/basic_cases/test_cases/9_for.p 
+./parser ../test/basic_cases/test_cases/9_for.p 
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+../
+make test
+cd ..
+make test
+make test
+make test
+make
+make clean
+make
+make
+make
+make clean
+make
+make test
+make
+make test
+make
+make
+make
+cd src
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+./parser ../test/basic_cases/test_cases/9_for.p --dump-ast
+cd ../
+make test
+exit
+make test
+make test
+cd src
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+make
+cd ..
+make test
+make test
+cd src
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+./parser ../test/basic_cases/test_cases/2_declaration.p --dump-ast
+make
+cd ../
+make test
+make test
+exit
+make clean
+exit
