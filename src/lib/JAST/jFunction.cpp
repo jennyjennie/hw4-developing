@@ -5,7 +5,7 @@
 #include "JAST/jast_internal.h"
 
 // Declare a global variable to show what function name currently in. 
-AstNode *gCurrentFuncName = NULL;
+AstNode *gCurrentFuncNode = NULL;
 extern AstNode *NewScalerTypeNode(int nLine, int nCol, const char *pszType);
 
 // ----------------------------------------------------------------
@@ -90,7 +90,7 @@ int VisitFunctionNode(AstNode *pAst)
 	int n, nErr = 0;
 
 	// Get function name currently in.
-	gCurrentFuncName = pAst;
+	gCurrentFuncNode = pAst;
 
 	n = SymTab_Lookup(pNode->pszFuncName);
 	if (n >= 0 && SymTab_GetLevel(n) == SymTab_GetCurrStackLevel()){
@@ -109,8 +109,8 @@ int VisitFunctionNode(AstNode *pAst)
 		SymTab_Pop();
 	}
 
-	// Set the gCurrentFuncName to NULL when leaving the function.
-	gCurrentFuncName = NULL;
+	// Set the gCurrentFuncNode to NULL when leaving the function.
+	gCurrentFuncNode = NULL;
 
 	return nErr;
 }

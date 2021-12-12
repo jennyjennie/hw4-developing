@@ -1,0 +1,50 @@
+5_PrintBinUnConstantInvocation
+--- your output:(result/5_PrintBinUnConstantInvocation)
++++ answer:(./basic_cases/sample_solutions/5_PrintBinUnConstantInvocation)
+@@ -86,12 +86,3 @@
+ |--------------------------------|
+ |  There is no syntactic error!  |
+ |--------------------------------|
+-<Error> Found in line 27, column 14: invalid operands to binary operator 'and' ('integer' and 'integer')
+-    print 10 and 0;
+-             ^
+-<Error> Found in line 28, column 13: invalid operands to binary operator 'or' ('integer' and 'integer')
+-    print 1 or 0;
+-            ^
+-<Error> Found in line 32, column 11: expression of print statement must be scalar type
+-    print func();
+-          ^
+
+7_if
+--- your output:(result/7_if)
++++ answer:(./basic_cases/sample_solutions/7_if)
+@@ -23,6 +23,3 @@
+ |--------------------------------|
+ |  There is no syntactic error!  |
+ |--------------------------------|
+-<Error> Found in line 22, column 12: invalid operands to binary operator '=' ('boolean' and 'boolean')
+-  if debug = true then
+-           ^
+
+10_return
+--- your output:(result/10_return)
++++ answer:(./basic_cases/sample_solutions/10_return)
+@@ -6,6 +6,3 @@
+ |--------------------------------|
+ |  There is no syntactic error!  |
+ |--------------------------------|
+-<Error> Found in line 9, column 3: program/procedure should not return a value
+-  return 0;
+-  ^
+
+11_call
+--- your output:(result/11_call)
++++ answer:(./basic_cases/sample_solutions/11_call)
+@@ -24,6 +24,3 @@
+ |--------------------------------|
+ |  There is no syntactic error!  |
+ |--------------------------------|
+-<Error> Found in line 24, column 9: too few/much arguments provided for function 'func'
+-  print func();
+-        ^
+

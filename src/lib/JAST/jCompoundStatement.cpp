@@ -78,8 +78,9 @@ int VisitPrintNode(AstNode *pAst)
 	int nErr;
 	SymbolValue_t nResultType;
 	PrintNode *pNode = (PrintNode *)pAst->pBody;
-	// Check whether the type of the expression (target) is scalar type.
+	// Skip further checks if there is semantic errors in expressions.
 	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+		// Check whether the type of the expression (target) is scalar type.
 		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
 		if(nResultType != kInteger && nResultType != kReal && nResultType != kBoolean && nResultType != kString){
 			ErrorMessage(pNode->pExpressionNode, "expression of print statement must be scalar type\n");
@@ -147,42 +148,43 @@ int VisitAssignNode(AstNode *pAst)
 	VariableRefNode *pVarRefNode = (VariableRefNode *)(pNode->pVariableRefNode)->pBody;
 	SymbolValue_t nVarType, nResultType;
 
-	nErr += VisitAstNode(pNode->pVariableRefNode);
+	// Skip further checks if there is semantic errors in variable reference.
+	if ((nErr = VisitAstNode(pNode->pVariableRefNode)) == 0){
+		n = SymTab_Lookup(pVarRefNode->pszVarName);
+		nKind = SymTab_GetKindValue(n);
 
-	n = SymTab_Lookup(pVarRefNode->pszVarName);
-	nKind = SymTab_GetKindValue(n);
-
- 	// Make sure variable reference is not an array type.
- 	p = SymTab_GetAstNode(n);
- 	nDimRef = AstLinkLength(pVarRefNode->pFirstArrRefNode);
- 	nDimDecl = AstLinkLength(((TypeNode *)p->pBody)->pFirstIntNode);
-	if (nDimRef < nDimDecl){
-		nErr++;
-		ErrorMessage(pNode->pVariableRefNode, "array assignment is not allowed\n");
-	}
-	// Make sure variable reference is not an constant.
-	else if (nKind == kConstant){
-		nErr++;
-		ErrorMessage(pNode->pVariableRefNode, "cannot assign to variable '%s' which is a constant\n", pVarRefNode->pszVarName);
-	}
-	// Make sure variable reference is not a loop variable when the context is within a loop body.
-	else if (nKind == kLoopVar){
-		nErr++;
-		ErrorMessage(pNode->pVariableRefNode, "the value of loop variable cannot be modified inside the loop body\n", pVarRefNode->pszVarName);
-	}
-	// Make sure the result expression type in assignment. (To-do : not quite sure)
-	else if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
-		nVarType = pVarRefNode->nVarType;
-		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
-		// Check if the result type of expression is array type.
-		if(nResultType != kInteger && nResultType != kReal && nResultType != kBoolean && nResultType != kString){
-			ErrorMessage(pNode->pExpressionNode, "array assignment is not allowed\n");
+	 	// 1. Make sure variable reference is not an array type.
+	 	p = SymTab_GetAstNode(n);
+	 	nDimRef = AstLinkLength(pVarRefNode->pFirstArrRefNode);
+	 	nDimDecl = AstLinkLength(((TypeNode *)p->pBody)->pFirstIntNode);
+		if (nDimRef < nDimDecl){
 			nErr++;
+			ErrorMessage(pNode->pVariableRefNode, "array assignment is not allowed\n");
 		}
-		// Check if the variable reference type is the same the result type of expression after type coercion.
-		else if(!((nResultType == kInteger && nVarType == kReal) || nVarType == nResultType)){
-			ErrorMessage(pAst, "assigning to '%s' from incompatible type '%s'\n", GetSymbolString(nVarType), GetSymbolString(nResultType));
+		// 2. Make sure variable reference is not an constant.
+		else if (nKind == kConstant){
 			nErr++;
+			ErrorMessage(pNode->pVariableRefNode, "cannot assign to variable '%s' which is a constant\n", pVarRefNode->pszVarName);
+		}
+		// 3. Make sure variable reference is not a loop variable when the context is within a loop body.
+		else if (nKind == kLoopVar){
+			nErr++;
+			ErrorMessage(pNode->pVariableRefNode, "the value of loop variable cannot be modified inside the loop body\n", pVarRefNode->pszVarName);
+		}
+		// 4. Make sure the result expression type in assignment. (To-do : not quite sure)
+		else if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+			nVarType = pVarRefNode->nVarType;
+			nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
+			// Check if the result type of expression is array type.
+			if(nResultType != kInteger && nResultType != kReal && nResultType != kBoolean && nResultType != kString){
+				ErrorMessage(pNode->pExpressionNode, "array assignment is not allowed\n");
+				nErr++;
+			}
+			// Check if the variable reference type is the same the result type of expression after type coercion.
+			else if(!((nResultType == kInteger && nVarType == kReal) || nVarType == nResultType)){
+				ErrorMessage(pAst, "assigning to '%s' from incompatible type '%s'\n", GetSymbolString(nVarType), GetSymbolString(nResultType));
+				nErr++;
+			}
 		}
 	}
 	return nErr;
@@ -196,22 +198,23 @@ int VisitReadNode(AstNode *pAst)
 	ReadNode *pNode = (ReadNode *)pAst->pBody;
 
 	nErr += VisitAstNode(pNode->pVariableRefNode);
-
-	// Get variable type (integer, string...) and variable kind (program, function, constant...) of variable reference
-	n = SymTab_Lookup(((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->pszVarName);
-	nKind = SymTab_GetKindValue(n);
-	nVarType = ((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->nVarType;
-	// Make sure that variable reference is a scalar type.
-	if (nKind == kVariable && (nVarType != kInteger && nVarType != kReal && nVarType != kString && nVarType != kBoolean)){
-		nErr++;
-		ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement must be scalar type\n");
+	// Skip further checks if there is semantic errors in variable reference.
+	if ((nErr = VisitAstNode(pNode->pVariableRefNode)) == 0){
+		// Get variable type (integer, string...) and variable kind (program, function, constant...) of variable reference
+		n = SymTab_Lookup(((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->pszVarName);
+		nKind = SymTab_GetKindValue(n);
+		nVarType = ((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->nVarType;
+		// 1. Make sure that variable reference is a scalar type.
+		if (nKind == kVariable && (nVarType != kInteger && nVarType != kReal && nVarType != kString && nVarType != kBoolean)){
+			nErr++;
+			ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement must be scalar type\n");
+		}
+		// 2. Make sure that variable reference is not a constant or loop variable.
+		else if (nKind == kConstant || nKind == kLoopVar){
+			nErr++;
+			ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement cannot be a constant or loop variable\n");
+		}
 	}
-	// Make sure that variable reference is not a constant or loop variable.
-	else if (nKind == kConstant || nKind == kLoopVar){
-		nErr++;
-		ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement cannot be a constant or loop variable\n");
-	}
-	
 	return nErr;
 }
 

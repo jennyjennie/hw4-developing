@@ -4,7 +4,7 @@
 
 #include "JAST/jast_internal.h"
 
-extern AstNode *gCurrentFuncName;
+extern AstNode *gCurrentFuncNode;
 extern AstNode *NewDeclarationNode_Type(int nLine, int nCol, AstNode *pFirstIdNode, AstNode *pTypeNode, const char *pszKind);
 extern AstNode *NewScalerTypeNode(int nLine, int nCol, const char *pszType);
 
@@ -77,10 +77,10 @@ int VisitConditionNode(AstNode *pAst)
 	int nErr = 0;
 	SymbolValue_t nResultType;
 	ConditionNode *pNode = (ConditionNode *)pAst->pBody;
-	// If there is semantic errors in expression, then no need to do further checks.
+	// Skip further checks if there is semantic errors in expression.
 	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
 		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
-		// If the result type of the expression is not boolean, then no need to do further checks.
+		// // Skip further checks if the result type of expression is not boolean.
 		if(nResultType != kBoolean){
 			ErrorMessage(pNode->pExpressionNode, "the expression of condition must be boolean type\n");
 			nErr++;
@@ -100,7 +100,7 @@ int VisitWhileNode(AstNode *pAst)
 	SymbolValue_t nResultType;
 	WhileNode *pNode = (WhileNode *)pAst->pBody;
 
-	// If there is semantic errors in expression, then no need to do further checks.
+	// Skip further checks if there is semantic errors in expression.
 	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
 		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
 		// If the result type of the expression is not boolean, then no need to do further checks.
@@ -118,17 +118,45 @@ int VisitWhileNode(AstNode *pAst)
 int VisitReturnNode(AstNode *pAst)
 {
 	int nErr = 0;
+	const char *pszFuncType, *pszResultType;
+	ReturnNode *pNode = (ReturnNode *)pAst->pBody;
+
+	// 1. Check if currently in the main program. (not in any function)
+	if(!gCurrentFuncNode){
+		ErrorMessage(pAst, "program/procedure should not return a value\n");
+		nErr++;
+	}
+	else{
+		// To-do : get the type of expression if it is array type.
+		// 2. Skip further checks if there is semantic errors in expressions.
+		if((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+			pszFuncType = ((FunctionNode *)gCurrentFuncNode->pBody)->pszReturnType;
+			pszResultType = GetSymbolString(((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType);
+			pszResultType  = pszResultType ? pszResultType : "UNKNOW_TYPE";
+			// 2.1 Check if the function return type is "void".
+			if(strcmp(pszFuncType, "void") == 0){
+				ErrorMessage(pAst, "program/procedure should not return a value\n");
+				nErr++;
+			}
+			// 2.2 Check if the return type is the same as the function return type after type coercion.
+			else if(!(strcmp(pszFuncType, pszResultType) == 0 || (strcmp(pszFuncType, "real") == 0 && strcmp(pszResultType, "integer") == 0))){
+				ErrorMessage(pAst, "return '%s' from a function with return type '%s'\n", pszFuncType, pszResultType);
+				nErr++;
+			}
+		}
+	}
+
 	return nErr;
 }
 
 int VisitForNode(AstNode *pAst)
 {
-	ForNode *pNode = (ForNode *)pAst->pBody;
 	int nErr = 0;
 	int n1, n2;
+	ForNode *pNode = (ForNode *)pAst->pBody;
 
 	SymTab_Push();
-	// Check the lower bound and upper bound of iteration count must be in the incremental order
+	// Make sure the lower bound and upper bound of iteration count be in the incremental order
 	n1 = ((IntValueNode *)(pNode->pStartIntNode)->pBody)->nValue;
 	n2 = ((IntValueNode *)(pNode->pEndIntNode)->pBody)->nValue;
 	if (n1 > n2){

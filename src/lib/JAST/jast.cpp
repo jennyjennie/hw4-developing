@@ -79,6 +79,11 @@ void ErrorMessage(AstNode *pAst, const char *format, ...)
 	fprintf(stderr, "^\n");
 }
 
+const char *GetArrayString(SymbolValue_t n)
+{
+	return k_ppszSymbols[n];
+}
+
 // ----------------------------------------------------------------
 // Print, semantic analysis, and code generation functions
 // ----------------------------------------------------------------
