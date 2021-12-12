@@ -285,11 +285,11 @@ CompoundStatement:
 ;
 
 Simple:
-    VariableReference ASSIGN Expression SEMICOLON { $$ = NewAssignReadNode(@2.first_line, @2.first_column, $1, $3); }
+    VariableReference ASSIGN Expression SEMICOLON { $$ = NewAssignNode(@2.first_line, @2.first_column, $1, $3); }
     |
     PRINT Expression SEMICOLON { $$ = NewPrintNode(@1.first_line, @1.first_column, $2); }
     |
-    READ VariableReference SEMICOLON { $$ = NewAssignReadNode(@1.first_line, @1.first_column, $2, NULL); }
+    READ VariableReference SEMICOLON { $$ = NewReadNode(@1.first_line, @1.first_column, $2); }
 ;
 
 VariableReference:
@@ -457,15 +457,16 @@ int main(int argc, const char *argv[]) {
     yyparse();
 
     if (argc >= 3 && strcmp(argv[2], "--dump-ast") == 0) {
-        //PrintAstNode(root, 0);
-        SymTab_Init();
-        VisitAstNode(root);
+        PrintAstNode(root, 0);
     }
 
     printf("\n"
            "|--------------------------------|\n"
            "|  There is no syntactic error!  |\n"
            "|--------------------------------|\n");
+
+    SymTab_Init();
+    VisitAstNode(root);
 
     delete root;
     fclose(yyin);

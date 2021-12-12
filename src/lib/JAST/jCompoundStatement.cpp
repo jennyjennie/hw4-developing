@@ -35,20 +35,26 @@ int PrintVariableRefNode(AstNode *pAst, int nLevel)
 	return 0;
 }
 
-int PrintAssignReadNode(AstNode *pAst, int nLevel)
+int PrintAssignNode(AstNode *pAst, int nLevel)
 {
-	AssignReadNode *pNode = (AssignReadNode *)pAst->pBody;
+	AssignNode *pNode = (AssignNode *)pAst->pBody;
 
 	PrintLeadingTabs(nLevel);
-	if (pNode->pExpressionNode){
-		printf("assignment statement <line: %d, col: %d>\n", pAst->location.line, pAst->location.col);
-		PrintAstNode(pNode->pVariableRefNode, nLevel + 1);
-		PrintAstNode(pNode->pExpressionNode, nLevel + 1);
-	}
-	else{
-		printf("read statement <line: %d, col: %d>\n", pAst->location.line, pAst->location.col);
-		PrintAstNode(pNode->pVariableRefNode, nLevel + 1);		
-	}
+	printf("assignment statement <line: %d, col: %d>\n", pAst->location.line, pAst->location.col);
+	PrintAstNode(pNode->pVariableRefNode, nLevel + 1);
+	PrintAstNode(pNode->pExpressionNode, nLevel + 1);
+
+	return 0;
+}
+
+int PrintReadNode(AstNode *pAst, int nLevel)
+{
+	ReadNode *pNode = (ReadNode *)pAst->pBody;
+
+	PrintLeadingTabs(nLevel);
+	printf("read statement <line: %d, col: %d>\n", pAst->location.line, pAst->location.col);
+	PrintAstNode(pNode->pVariableRefNode, nLevel + 1);		
+	
 	return 0;
 }
 
@@ -172,12 +178,21 @@ AstNode *NewVariableRefNode(int nLine, int nCol, const char *pszVarName, AstNode
 	return NewAstNode(nLine, nCol, pBody, PrintVariableRefNode, VisitVariableRefNode, NULL);
 }
 
-AstNode *NewAssignReadNode(int nLine, int nCol, AstNode *pVariableRefNode, AstNode *pExpressionNode)
+AstNode *NewAssignNode(int nLine, int nCol, AstNode *pVariableRefNode, AstNode *pExpressionNode)
 {
 	// Filling in body contents.
-	AssignReadNode *pBody = new AssignReadNode;
+	AssignNode *pBody = new AssignNode;
 	pBody->pVariableRefNode = pVariableRefNode;
 	pBody->pExpressionNode = pExpressionNode;
 	// Build AST.
-	return NewAstNode(nLine, nCol, pBody, PrintAssignReadNode, NULL, NULL);
+	return NewAstNode(nLine, nCol, pBody, PrintAssignNode, NULL, NULL);
+}
+
+AstNode *NewReadNode(int nLine, int nCol, AstNode *pVariableRefNode)
+{
+	// Filling in body contents.
+	ReadNode *pBody = new ReadNode;
+	pBody->pVariableRefNode = pVariableRefNode;
+	// Build AST.
+	return NewAstNode(nLine, nCol, pBody, PrintReadNode, NULL, NULL);
 }

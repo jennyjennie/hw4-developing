@@ -82,9 +82,12 @@ program <line: 4, col: 1> PrintBinUnConstantInvocation void
         constant <line: 31, col: 22> 4
     print statement <line: 32, col: 5>
       function invocation <line: 32, col: 11> func
-27:14: error: Operands of 'and' must be boolean.
-28:13: error: Operands of 'or' must be boolean.
 
 |--------------------------------|
 |  There is no syntactic error!  |
 |--------------------------------|
+27:14: error: Operands of 'and' must be boolean.
+28:13: error: Operands of 'or' must be boolean.
+<Error> Found in line 32, column 11: expression of print statement must be scalar type
+    print func();
+          ^

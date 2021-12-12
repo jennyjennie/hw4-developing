@@ -39,7 +39,8 @@ extern AstNode *NewExpressionNode(int nLine, int nCol, const char *pszOp, AstNod
 extern AstNode *NewCompoundStatementNode(int nLine, int nCol, AstNode *pFirstDeclarationNode, AstNode *pFirstStatementNode);
 extern AstNode *NewPrintNode(int nLine, int nCol, AstNode *pExpressionNode);
 extern AstNode *NewVariableRefNode(int nLine, int nCol, const char *pszVarName, AstNode *pFirstArrRefNode);
-extern AstNode *NewAssignReadNode(int nLine, int nCol, AstNode *pVariableRefNode, AstNode *pExpressionNode);
+extern AstNode *NewAssignNode(int nLine, int nCol, AstNode *pVariableRefNode, AstNode *pExpressionNode);
+extern AstNode *NewReadNode(int nLine, int nCol, AstNode *pVariableRefNode);
 
 // extern froom jStatement.cpp
 extern AstNode *NewConditionNode(int nLine, int nCol, AstNode *pExpressionNode, AstNode *pThenCompoundStatementNode, AstNode *pElseCompoundStatementNode);

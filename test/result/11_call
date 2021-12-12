@@ -20,8 +20,10 @@ program <line: 4, col: 1> call void
       constant <line: 23, col: 12> 30
     print statement <line: 24, col: 3>
       function invocation <line: 24, col: 9> func
-24:9: error: 'func' function's number of arguments is not the same as number of parameters.
 
 |--------------------------------|
 |  There is no syntactic error!  |
 |--------------------------------|
+<Error> Found in line 24, column 9: too few/much arguments provided for function 'func'
+  print func();
+        ^

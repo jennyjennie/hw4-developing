@@ -106,9 +106,13 @@ struct VariableRefNode {
 	SymbolValue_t nVarType;			// filled by visit(), symbol value of the type of the referenced variable.
 };
 
-struct AssignReadNode {
+struct AssignNode {
 	AstNode *pVariableRefNode;
 	AstNode *pExpressionNode;
+};
+
+struct ReadNode {
+	AstNode *pVariableRefNode;
 };
 
 struct ConditionNode {
