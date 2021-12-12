@@ -46,6 +46,8 @@ int determine_op_type(AstNode *pAst)
 	const SymbolValue_t kRelations[] = {kLT, kLE, kEQ, kGE, kGT, kNE, kUnknown};
 	const SymbolValue_t kBooleans[] = {kAND, kOR, kUnknown};
 
+	//To-do : print error messages using function ErrorMessage()
+
 	if (pNode->nOp == kADD && pLeft->nResultType == kString && pRight->nResultType == kString){
 		pNode->nOp = kSTRCAT;
 		pNode->nResultType = kString;

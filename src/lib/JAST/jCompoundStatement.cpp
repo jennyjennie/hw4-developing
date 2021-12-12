@@ -138,9 +138,78 @@ int VisitVariableRefNode(AstNode *pAst)
 	return 0;
 }
 
-int VisitAssignReadNode(AstNode *pAst)
+int VisitAssignNode(AstNode *pAst)
 {	
 	int nErr = 0;
+	int n, nKind, nDimDecl;
+	AstNode *p;
+	AssignNode *pNode = (AssignNode *)pAst->pBody;
+	VariableRefNode *pVarRefNode = (VariableRefNode *)(pNode->pVariableRefNode)->pBody;
+	SymbolValue_t nVarType, nResultType;
+
+	nErr += VisitAstNode(pNode->pVariableRefNode);
+
+	n = SymTab_Lookup(pVarRefNode->pszVarName);
+	nKind = SymTab_GetKindValue(n);
+
+ 	// Make sure variable reference is not an array type.
+ 	p = SymTab_GetAstNode(n);
+ 	nDimDecl = AstLinkLength(((TypeNode *)p->pBody)->pFirstIntNode);
+	if (nDimDecl > 0){
+		nErr++;
+		ErrorMessage(pNode->pVariableRefNode, "array assignment is not allowed\n");
+	}
+	// Make sure variable reference is not an constant.
+	else if (nKind == kConstant){
+		nErr++;
+		ErrorMessage(pNode->pVariableRefNode, "cannot assign to variable '%s' which is a constant\n", pVarRefNode->pszVarName);
+	}
+	// Make sure variable reference is not a loop variable when the context is within a loop body. (To-do : don't know how to know if it's in loop body)
+	else if (nKind == kLoopVar){
+		nErr++;
+		ErrorMessage(pNode->pVariableRefNode, "the value of loop variable cannot be modified inside the loop body\n", pVarRefNode->pszVarName);
+	}
+	// Make sure the result expression type in assignment. (To-do : not quite sure)
+	else if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+		nVarType = pVarRefNode->nVarType;
+		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
+		// Check if the result type of expression is array type.
+		if(nResultType != kInteger && nResultType != kReal && nResultType != kBoolean && nResultType != kString){
+			ErrorMessage(pNode->pExpressionNode, "array assignment is not allowed\n");
+			nErr++;
+		}
+		// Check if the variable reference type is the same the result type of expression after type coercion.
+		else if(!((nResultType == kInteger && nVarType == kReal) || nVarType == nResultType)){
+			ErrorMessage(pAst, "assigning to '%s' from incompatible type '%s'\n", GetSymbolString(nVarType), GetSymbolString(nResultType));
+			nErr++;
+		}
+	}
+	return nErr;
+}
+
+int VisitReadNode(AstNode *pAst)
+{	
+	int nErr = 0;
+	int n, nKind;
+	SymbolValue_t nVarType;
+	ReadNode *pNode = (ReadNode *)pAst->pBody;
+
+	nErr += VisitAstNode(pNode->pVariableRefNode);
+
+	// Get variable type (integer, string...) and variable kind (program, function, constant...) of variable reference
+	n = SymTab_Lookup(((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->pszVarName);
+	nKind = SymTab_GetKindValue(n);
+	nVarType = ((VariableRefNode *)(pNode->pVariableRefNode)->pBody)->nVarType;
+	// Make sure that variable reference is a scalar type.
+	if (nKind == kVariable && (nVarType != kInteger && nVarType != kReal && nVarType != kString && nVarType != kBoolean)){
+		nErr++;
+		ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement must be scalar type\n");
+	}
+	// Make sure that variable reference is not a constant or loop variable.
+	else if (nKind == kConstant || nKind == kLoopVar){
+		nErr++;
+		ErrorMessage(pNode->pVariableRefNode, "variable reference of read statement cannot be a constant or loop variable\n");
+	}
 	
 	return nErr;
 }
@@ -185,7 +254,7 @@ AstNode *NewAssignNode(int nLine, int nCol, AstNode *pVariableRefNode, AstNode *
 	pBody->pVariableRefNode = pVariableRefNode;
 	pBody->pExpressionNode = pExpressionNode;
 	// Build AST.
-	return NewAstNode(nLine, nCol, pBody, PrintAssignNode, NULL, NULL);
+	return NewAstNode(nLine, nCol, pBody, PrintAssignNode, VisitAssignNode, NULL);
 }
 
 AstNode *NewReadNode(int nLine, int nCol, AstNode *pVariableRefNode)
@@ -194,5 +263,5 @@ AstNode *NewReadNode(int nLine, int nCol, AstNode *pVariableRefNode)
 	ReadNode *pBody = new ReadNode;
 	pBody->pVariableRefNode = pVariableRefNode;
 	// Build AST.
-	return NewAstNode(nLine, nCol, pBody, PrintReadNode, NULL, NULL);
+	return NewAstNode(nLine, nCol, pBody, PrintReadNode, VisitReadNode, NULL);
 }

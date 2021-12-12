@@ -14,8 +14,9 @@ end
 end
 
 begin
-    var a: array 3 of integer;
-    func5(3, "world");
+    var a: array 2 of array 3 of integer;
+    var b: real;
+    b := 1234;
     print a[40][50][60];
     print a;
     print 1 * 5;
