@@ -46,7 +46,7 @@ int determine_op_type(AstNode *pAst)
 	const SymbolValue_t kRelations[] = {kLT, kLE, kEQ, kGE, kGT, kNE, kUnknown};
 	const SymbolValue_t kBooleans[] = {kAND, kOR, kUnknown};
 
-	//To-do : print error messages using function ErrorMessage()
+	//To-do : print operant type of array in error message
 
 	if (pNode->nOp == kADD && pLeft->nResultType == kString && pRight->nResultType == kString){
 		pNode->nOp = kSTRCAT;
@@ -56,37 +56,37 @@ int determine_op_type(AstNode *pAst)
 		if (InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = pRight->nResultType;
 		else
-			printf("%d:%d: error: The operand of unary '%s' must be integer or real.\n", pAst->location.line, pAst->location.col, pNode->pszOp); //DBG : Delete
+			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pRight->nResultType));
 	}
 	else if (pNode->nOp == kNOT){
 		if (pRight->nResultType == kBoolean)
 			pNode->nResultType = kBoolean;
 		else
-			printf("%d:%d: error: The operand of unary '%s' must be boolean.\n", pAst->location.line, pAst->location.col, pNode->pszOp); //DBG : Delete
+			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pRight->nResultType));
 	}
 	else if (pNode->nOp == kMOD){
 		if (pLeft->nResultType == kInteger && pRight->nResultType == kInteger)
 			pNode->nResultType = kInteger;
 		else
-			printf("%d:%d: error: Operands of '%s' must be integers.\n", pAst->location.line, pAst->location.col, pNode->pszOp); //DBG : Delete
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
 	}
 	else if (InSymbolValueSet(pNode->nOp, kArithmetics)){
 		if (InSymbolValueSet(pLeft->nResultType, kIntReal) && InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = (pLeft->nResultType == kReal || pRight->nResultType == kReal) ? kReal : kInteger;
 		else
-			printf("%d:%d: error: Operands of '%s' must be integer or real.\n", pAst->location.line, pAst->location.col, pNode->pszOp); //DBG : Delete
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
 	}
 	else if (InSymbolValueSet(pNode->nOp, kRelations)){
 		if (InSymbolValueSet(pLeft->nResultType, kIntReal) && InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = kBoolean;
 		else
-			printf("%d:%d: error: Operands of '%s' must be integer or real.\n", pAst->location.line, pAst->location.col, pNode->pszOp); 
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
 	}
 	else if (InSymbolValueSet(pNode->nOp, kBooleans)){
 		if (pLeft->nResultType == kBoolean && pRight->nResultType == kBoolean)
 			pNode->nResultType = kBoolean;
 		else
-			printf("%d:%d: error: Operands of '%s' must be boolean.\n", pAst->location.line, pAst->location.col, pNode->pszOp);
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
 	}
 
 	return (pNode->nResultType != kUnknown) ? 0 : 1;

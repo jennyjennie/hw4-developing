@@ -4,6 +4,7 @@
 
 #include "JAST/jast_internal.h"
 
+extern AstNode *gCurrentFuncName;
 extern AstNode *NewDeclarationNode_Type(int nLine, int nCol, AstNode *pFirstIdNode, AstNode *pTypeNode, const char *pszKind);
 extern AstNode *NewScalerTypeNode(int nLine, int nCol, const char *pszType);
 
@@ -74,12 +75,43 @@ int PrintForNode(AstNode *pAst, int nLevel)
 int VisitConditionNode(AstNode *pAst)
 {
 	int nErr = 0;
+	SymbolValue_t nResultType;
+	ConditionNode *pNode = (ConditionNode *)pAst->pBody;
+	// If there is semantic errors in expression, then no need to do further checks.
+	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
+		// If the result type of the expression is not boolean, then no need to do further checks.
+		if(nResultType != kBoolean){
+			ErrorMessage(pNode->pExpressionNode, "the expression of condition must be boolean type\n");
+			nErr++;
+		}
+	}
+	else{
+		nErr += VisitAstNode(pNode->pThenCompoundStatementNode);
+		nErr += VisitAstNode(pNode->pElseCompoundStatementNode);
+	}
+	
 	return nErr;
 }
 
 int VisitWhileNode(AstNode *pAst)
 {
 	int nErr = 0;
+	SymbolValue_t nResultType;
+	WhileNode *pNode = (WhileNode *)pAst->pBody;
+
+	// If there is semantic errors in expression, then no need to do further checks.
+	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
+		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
+		// If the result type of the expression is not boolean, then no need to do further checks.
+		if(nResultType != kBoolean){
+			ErrorMessage(pNode->pExpressionNode, "the expression of condition must be boolean type\n");
+			nErr++;
+		}
+	}
+	else{
+		nErr += VisitAstNode(pNode->pCompoundStatementNode);
+	}
 	return nErr;
 }
 
@@ -93,8 +125,16 @@ int VisitForNode(AstNode *pAst)
 {
 	ForNode *pNode = (ForNode *)pAst->pBody;
 	int nErr = 0;
+	int n1, n2;
 
 	SymTab_Push();
+	// Check the lower bound and upper bound of iteration count must be in the incremental order
+	n1 = ((IntValueNode *)(pNode->pStartIntNode)->pBody)->nValue;
+	n2 = ((IntValueNode *)(pNode->pEndIntNode)->pBody)->nValue;
+	if (n1 > n2){
+		ErrorMessage(pAst, "the lower bound and upper bound of iteration count must be in the incremental order\n");
+		nErr++;
+	}
 	nErr += VisitAstNode(pNode->pDeclarationNode);
 	nErr += VisitAstNode(pNode->pCompoundStatementNode);
 	SymTab_Pop();

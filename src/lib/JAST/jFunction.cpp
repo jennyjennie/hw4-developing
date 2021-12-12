@@ -4,6 +4,8 @@
 
 #include "JAST/jast_internal.h"
 
+// Declare a global variable to show what function name currently in. 
+AstNode *gCurrentFuncName = NULL;
 extern AstNode *NewScalerTypeNode(int nLine, int nCol, const char *pszType);
 
 // ----------------------------------------------------------------
@@ -87,6 +89,9 @@ int VisitFunctionNode(AstNode *pAst)
 	FunctionNode *pNode = (FunctionNode *)pAst->pBody;
 	int n, nErr = 0;
 
+	// Get function name currently in.
+	gCurrentFuncName = pAst;
+
 	n = SymTab_Lookup(pNode->pszFuncName);
 	if (n >= 0 && SymTab_GetLevel(n) == SymTab_GetCurrStackLevel()){
 		ErrorMessage(pAst, "symbol '%s' is redeclared\n", pNode->pszFuncName); // DBG : not quite sure
@@ -103,6 +108,9 @@ int VisitFunctionNode(AstNode *pAst)
 		nErr += VisitAstList(pNode->pFirstStatementNode, false);
 		SymTab_Pop();
 	}
+
+	// Set the gCurrentFuncName to NULL when leaving the function.
+	gCurrentFuncName = NULL;
 
 	return nErr;
 }

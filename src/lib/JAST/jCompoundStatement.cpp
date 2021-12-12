@@ -165,7 +165,7 @@ int VisitAssignNode(AstNode *pAst)
 		nErr++;
 		ErrorMessage(pNode->pVariableRefNode, "cannot assign to variable '%s' which is a constant\n", pVarRefNode->pszVarName);
 	}
-	// Make sure variable reference is not a loop variable when the context is within a loop body. (To-do : don't know how to know if it's in loop body)
+	// Make sure variable reference is not a loop variable when the context is within a loop body.
 	else if (nKind == kLoopVar){
 		nErr++;
 		ErrorMessage(pNode->pVariableRefNode, "the value of loop variable cannot be modified inside the loop body\n", pVarRefNode->pszVarName);
