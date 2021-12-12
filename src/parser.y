@@ -457,7 +457,7 @@ int main(int argc, const char *argv[]) {
     yyparse();
 
     if (argc >= 3 && strcmp(argv[2], "--dump-ast") == 0) {
-        //PrintAstNode(root, 0); //DBG : print for hw4 developing
+        PrintAstNode(root, 0); //DBG : print for hw4 developing
     }
 
     printf("\n"

@@ -141,7 +141,7 @@ int VisitVariableRefNode(AstNode *pAst)
 int VisitAssignNode(AstNode *pAst)
 {	
 	int nErr = 0;
-	int n, nKind, nDimDecl;
+	int n, nKind, nDimDecl, nDimRef;
 	AstNode *p;
 	AssignNode *pNode = (AssignNode *)pAst->pBody;
 	VariableRefNode *pVarRefNode = (VariableRefNode *)(pNode->pVariableRefNode)->pBody;
@@ -154,8 +154,9 @@ int VisitAssignNode(AstNode *pAst)
 
  	// Make sure variable reference is not an array type.
  	p = SymTab_GetAstNode(n);
+ 	nDimRef = AstLinkLength(pVarRefNode->pFirstArrRefNode);
  	nDimDecl = AstLinkLength(((TypeNode *)p->pBody)->pFirstIntNode);
-	if (nDimDecl > 0){
+	if (nDimRef < nDimDecl){
 		nErr++;
 		ErrorMessage(pNode->pVariableRefNode, "array assignment is not allowed\n");
 	}
