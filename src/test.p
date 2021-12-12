@@ -1,28 +1,29 @@
-/**
- * function2.p: function 2
- */
+//&S-
 //&T-
-function2;
 
-// function declaration
-sum(a, b: integer): integer;
-product(a, b: integer): integer;
+AssignRead;
 
-// function definition
-dot(x1, y1, x2, y2: integer): integer
-begin
-    var result: integer;
-    var a : array 3 of integer;
-    result := sum(product(x1, y1), product(x2, y2));
-    return a;
-end
-end
+// variable reference, assignment, read
 
 begin
-        var a : integer;
-        var b : integer;
+    var a: 3;
+    var b: boolean;
+    var c: string;
+    var d: array 1 of array 9 of real;
 
-        a := 1;
-        b := dot(a, a);
+    a := 10;
+    c := false;
+    b := "Compiler Design";
+    d[1][5] := 10.09;
+
+    a := a;
+
+    a := a + 231;
+    b := not b;
+    c := "Compiler Design" + "No.1" + c;
+    d[a + 1][-1 + 10] := 12.28;
+
+    read a;
+    read d[a * a][2];
 end
 end

@@ -79,7 +79,7 @@ void ErrorMessage(AstNode *pAst, const char *format, ...)
 	fprintf(stderr, "^\n");
 }
 
-// Get array type string when array undersubscript in error messages
+// Get array type string for printing error messages.
 const char *GetArrayTypeString(AstNode *pAst)
 {	
 	int n;

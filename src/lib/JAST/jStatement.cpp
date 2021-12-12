@@ -83,7 +83,7 @@ int VisitConditionNode(AstNode *pAst)
 		// // Skip further checks if the result type of expression is not boolean.
 		if(nResultType != kBoolean){
 			ErrorMessage(pNode->pExpressionNode, "the expression of condition must be boolean type\n");
-			nErr++;
+			return 1;
 		}
 	}
 	else{
@@ -103,10 +103,10 @@ int VisitWhileNode(AstNode *pAst)
 	// Skip further checks if there is semantic errors in expression.
 	if ((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
 		nResultType = ((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType;
-		// If the result type of the expression is not boolean, then no need to do further checks.
+		// Skip further checks if the result type of expression is not boolean type.
 		if(nResultType != kBoolean){
 			ErrorMessage(pNode->pExpressionNode, "the expression of condition must be boolean type\n");
-			nErr++;
+			return 1;
 		}
 	}
 	else{
@@ -127,7 +127,6 @@ int VisitReturnNode(AstNode *pAst)
 		nErr++;
 	}
 	else{
-		// To-do : get the type of expression if it is array type.
 		// 2. Skip further checks if there is semantic errors in expressions.
 		if((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
 			pszFuncType = ((FunctionNode *)gCurrentFuncNode->pBody)->pszReturnType;
@@ -156,7 +155,7 @@ int VisitForNode(AstNode *pAst)
 	ForNode *pNode = (ForNode *)pAst->pBody;
 
 	SymTab_Push();
-	// Make sure the lower bound and upper bound of iteration count be in the incremental order
+	// Check the lower bound and upper bound of iteration count be in the incremental order
 	n1 = ((IntValueNode *)(pNode->pStartIntNode)->pBody)->nValue;
 	n2 = ((IntValueNode *)(pNode->pEndIntNode)->pBody)->nValue;
 	if (n1 > n2){

@@ -58,7 +58,7 @@ int VisitDeclarationNode(AstNode *pAst)
 		p = p->pNext;
 	}
 
-	// To-do: Get the type node, if it has a list of int nodes, then mask sure each int > 0. (Done)
+	// Get the type node, if it has a list of int nodes, then mask sure each int > 0.
 	q = pType->pFirstIntNode;
 	p = pNode->pFirstIdNode;
 	while(q){
