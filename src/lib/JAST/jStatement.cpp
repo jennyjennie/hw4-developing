@@ -132,7 +132,7 @@ int VisitReturnNode(AstNode *pAst)
 		if((nErr = VisitAstNode(pNode->pExpressionNode)) == 0){
 			pszFuncType = ((FunctionNode *)gCurrentFuncNode->pBody)->pszReturnType;
 			pszResultType = GetSymbolString(((ExpressionNode *)(pNode->pExpressionNode)->pBody)->nResultType);
-			pszResultType  = pszResultType ? pszResultType : "UNKNOW_TYPE";
+			pszResultType  = pszResultType ? pszResultType : GetArrayTypeString(pNode->pExpressionNode);
 			// 2.1 Check if the function return type is "void".
 			if(strcmp(pszFuncType, "void") == 0){
 				ErrorMessage(pAst, "program/procedure should not return a value\n");

@@ -159,6 +159,7 @@ extern int  SearchStringItem(const char *pszItem, const char *ppszItems[]);
 extern bool InSymbolValueSet(SymbolValue_t nSymbol, const SymbolValue_t pnSymbols[]);
 extern SymbolValue_t GetSymbolValue(const char *pszSymbol);
 extern const char *GetSymbolString(SymbolValue_t n);
+extern const char *GetArrayTypeString(AstNode *pAst);
 
 // extern from SymTab.cpp
 extern void SymTab_Init();

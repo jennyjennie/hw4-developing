@@ -45,8 +45,8 @@ int determine_op_type(AstNode *pAst)
 	const SymbolValue_t kArithmetics[] = {kADD, kMINUS, kMULTIPLY, kDIVIDE, kUnknown};
 	const SymbolValue_t kRelations[] = {kLT, kLE, kEQ, kGE, kGT, kNE, kUnknown};
 	const SymbolValue_t kBooleans[] = {kAND, kOR, kUnknown};
+	const char *pszLeftOpType, *pszRightOpType;
 
-	//To-do : print operant type of array in error message
 
 	if (pNode->nOp == kADD && pLeft->nResultType == kString && pRight->nResultType == kString){
 		pNode->nOp = kSTRCAT;
@@ -55,38 +55,54 @@ int determine_op_type(AstNode *pAst)
 	else if (pNode->nOp == kNEG){
 		if (InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = pRight->nResultType;
-		else
-			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pRight->nResultType));
+		else{
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), pszRightOpType);
+		}
 	}
 	else if (pNode->nOp == kNOT){
 		if (pRight->nResultType == kBoolean)
 			pNode->nResultType = kBoolean;
-		else
-			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pRight->nResultType));
+		else{
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operand to unary operator '%s' ('%s')\n", GetSymbolString(pNode->nOp), pszRightOpType);
+		}
 	}
 	else if (pNode->nOp == kMOD){
 		if (pLeft->nResultType == kInteger && pRight->nResultType == kInteger)
 			pNode->nResultType = kInteger;
-		else
-			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
+		else{
+			pszLeftOpType = GetSymbolString(pLeft->nResultType) ? GetSymbolString(pLeft->nResultType) : GetArrayTypeString(pNode->pLeftNode);
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), pszLeftOpType, pszRightOpType);
+		}
 	}
 	else if (InSymbolValueSet(pNode->nOp, kArithmetics)){
 		if (InSymbolValueSet(pLeft->nResultType, kIntReal) && InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = (pLeft->nResultType == kReal || pRight->nResultType == kReal) ? kReal : kInteger;
-		else
-			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
+		else{
+			pszLeftOpType = GetSymbolString(pLeft->nResultType) ? GetSymbolString(pLeft->nResultType) : GetArrayTypeString(pNode->pLeftNode);
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), pszLeftOpType, pszRightOpType);
+		}
 	}
 	else if (InSymbolValueSet(pNode->nOp, kRelations)){
 		if (InSymbolValueSet(pLeft->nResultType, kIntReal) && InSymbolValueSet(pRight->nResultType, kIntReal))
 			pNode->nResultType = kBoolean;
-		else
-			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
+		else{
+			pszLeftOpType = GetSymbolString(pLeft->nResultType) ? GetSymbolString(pLeft->nResultType) : GetArrayTypeString(pNode->pLeftNode);
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), pszLeftOpType, pszRightOpType);
+		}
 	}
 	else if (InSymbolValueSet(pNode->nOp, kBooleans)){
 		if (pLeft->nResultType == kBoolean && pRight->nResultType == kBoolean)
 			pNode->nResultType = kBoolean;
-		else
-			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), GetSymbolString(pLeft->nResultType), GetSymbolString(pRight->nResultType));
+		else{
+			pszLeftOpType = GetSymbolString(pLeft->nResultType) ? GetSymbolString(pLeft->nResultType) : GetArrayTypeString(pNode->pLeftNode);
+			pszRightOpType = GetSymbolString(pRight->nResultType) ? GetSymbolString(pRight->nResultType) : GetArrayTypeString(pNode->pRightNode);
+			ErrorMessage(pAst, "invalid operands to binary operator '%s' ('%s' and '%s')\n", GetSymbolString(pNode->nOp), pszLeftOpType, pszRightOpType);
+		}
 	}
 
 	return (pNode->nResultType != kUnknown) ? 0 : 1;

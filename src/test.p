@@ -1,36 +1,28 @@
-//&S-
+/**
+ * function2.p: function 2
+ */
 //&T-
+function2;
 
-function;
+// function declaration
+sum(a, b: integer): integer;
+product(a, b: integer): integer;
 
-// 1 function with 3 normal type parameters
-// 1 function with 1 array type parameter
-// 1 function with 0 parameter
-// 1 procedure with 0 parameter
-// 1 procedure with 2 parameter
-
-func1(x, y: integer; z: string): boolean
+// function definition
+dot(x1, y1, x2, y2: integer): integer
 begin
+    var result: integer;
+    var a : array 3 of integer;
+    result := sum(product(x1, y1), product(x2, y2));
+    return a;
 end
 end
 
-func2(a: array 1 of array 2 of boolean): string
 begin
-    var bool : boolean;
-    return bool;
-end
-end
+        var a : integer;
+        var b : integer;
 
-func3(): string;
-
-func4()
-begin
-
-end
-end
-
-func5(b, c: real);
-begin
-    return "123";
+        a := 1;
+        b := dot(a, a);
 end
 end

@@ -79,9 +79,21 @@ void ErrorMessage(AstNode *pAst, const char *format, ...)
 	fprintf(stderr, "^\n");
 }
 
-const char *GetArrayString(SymbolValue_t n)
-{
-	return k_ppszSymbols[n];
+// Get array type string when array undersubscript in error messages
+const char *GetArrayTypeString(AstNode *pAst)
+{	
+	int n;
+	const char *pszVarName, *pszArrayTypeStr;
+	ExpressionNode *pNode = (ExpressionNode *)pAst->pBody;
+
+	// Get the variable name in the expression node.
+	pszVarName = ((VariableRefNode *)pNode->pLeftNode->pBody)->pszVarName;
+	
+	// Look up in the symbol table and get the array type string.
+	n = SymTab_Lookup(pszVarName);
+	pszArrayTypeStr = SymTab_GetTypeStr(n);
+	
+	return pszArrayTypeStr;
 }
 
 // ----------------------------------------------------------------
